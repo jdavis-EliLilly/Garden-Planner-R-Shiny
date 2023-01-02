@@ -13,7 +13,7 @@ library(shiny)
 
 ui <- navbarPage(
     
-    #Title of the tab when MANTIS is launched
+    #Title of the tab when app is launched
     windowTitle = ("Garden Planner"),
     
     #Title of the Homepage
@@ -34,7 +34,53 @@ ui <- navbarPage(
                           column(4,align="center",actionBttn(inputId = "G_Planning",label = "Garden Planning",style = "float",size = "lg",color = "default")),
                           column(4,align="center",actionBttn(inputId = "Seed_Info",label = "Seed Selection",style = "float",size = "lg",color = "default"))
                  )
-             ))
+             )
+        ),
+    
+    ##Planting tab
+    tabPanel(title = "Planting Date Guide",
+             fluidPage(
+                 #navbarPage("When to plant your selections"),
+                 selectInput("Known_unknown_frost_date", "Do you know the expected date of the last frost in your area?", choices = c("Yes", "No")),
+                 
+                 br(),
+                 br(),   
+                 sidebarLayout(
+                     sidebarPanel(
+                         
+                         
+                         dateInput("frost_Start_date","What day is the expected last frost for your area?"),
+                         selectInput("plantid", "Enter Plant Name", choices = "yeehaw"),
+                         
+                         actionBttn(inputId = "Add_plant_date", label = "Add plant to planting date table", color = "success"),
+                         
+                         br(),
+                         br(),
+                         
+                         fileInput("uploadFile_plants", "Upload a list of plants you would like added to the planting date table", accept = c(".xlsx")),
+                         
+                         
+                         mainPanel(
+                             tableOutput('contents')
+                         )
+                     ),
+                     
+                     
+                     mainPanel(
+                         
+                         # Output: Tabset w/ plot, summary, and table ----
+                         box(title = "Preview Planting Dates",width = 20,collapsible = FALSE,solidHeader = TRUE,background = NULL,
+                             tabsetPanel(type = "tabs",
+                                         tabPanel("Inside Planing Date",dataTableOutput("Plant_Inside_Dates")),
+                                         tabPanel("Outside Planting Date",dataTableOutput("Plant_Outside_Dates")),
+                                         tabPanel("Harvest Date Range",dataTableOutput("Harvest_Date")),
+                                         tabPanel("All Dates",dataTableOutput("All_Date"))))
+                     )
+                     
+                     
+                 )
+                 
+             )) # END planting tab panel
     
 ) # end UI specifications
 
